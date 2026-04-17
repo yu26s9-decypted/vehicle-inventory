@@ -26,6 +26,7 @@ public class Main {
         inventory.add(new Vehicle(101124, "Honda Civic", "White", 70000, 7500));
         inventory.add(new Vehicle(101125, "Subaru Outback", "Green", 55000, 14500));
         inventory.add(new Vehicle(101126, "Jeep Wrangler", "Yellow", 35000, 16500));
+        inventory.add(new Vehicle(201123, "Tesla Model S", "White", 0, 94990));
 
         int userBuyer = vehicleSystem();
 
@@ -41,6 +42,7 @@ public class Main {
                     searchByPriceRange();
                 case 4:
                     searchByColor();
+                    break;
                 case 5:
                     addAVehicle();
                     break;
@@ -68,11 +70,27 @@ public class Main {
     }
 
 
-    private static void searchByColor() {
+
+    private static List<Vehicle> searchByColor() {
+        String askColor = askString("What vehicle color are you looking for");
+        List<Vehicle> matchingVehicle = new ArrayList<>();
+
+        for (Vehicle v : inventory){
+            if (askColor.equalsIgnoreCase(v.getColor())){
+                matchingVehicle.add(v);
+            }
+        }
+
+        System.out.println("Found: " + matchingVehicle.size() + (matchingVehicle.size() == 1 ? " result" : " results"));
+        displayVehicles( matchingVehicle.toArray(new Vehicle[0]), matchingVehicle.size());
+        return matchingVehicle;
+
+
 
     }
 
-    private static void searchByPriceRange() {
+    private static List<Vehicle> searchByPriceRange() {
+        return null;
     }
 
     private static void listAllVehicles(List<Vehicle> vehicles, int numberOfVehicles) {
