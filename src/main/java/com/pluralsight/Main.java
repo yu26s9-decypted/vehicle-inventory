@@ -1,6 +1,5 @@
 package com.pluralsight;
 
-import java.io.Console;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -41,6 +40,7 @@ public class Main {
                     break;
                 case 3:
                     searchByPriceRange();
+                    break;
                 case 4:
                     searchByColor();
                     break;
@@ -48,17 +48,19 @@ public class Main {
                     addAVehicle();
                     break;
                 case 6: // Exit
-                    System.out.println("Goodbye!");
+                    System.out.println("Thank you, goodbye!");
                     break;
             }
             userBuyer = vehicleSystem();
+
+
         }
 
     }
 
 
     private static void addAVehicle() {
-        String addNewVehicleToInventory = askString("What vehicles are you adding? Format: VehicleID|Make Model | Color | Odometer | Price ");
+        String addNewVehicleToInventory = askString("What vehicles are you adding? Format: VehicleID|Make Model|Color|Odometer|Price ");
         String[] vehicle =  addNewVehicleToInventory.split("\\|");
         long vehicleId = Long.parseLong(vehicle[0]);
         String vehicleMakeModel = vehicle[1];
@@ -89,6 +91,7 @@ public class Main {
         return matchingVehicle;
     }
 
+
     private static List<Vehicle> searchByMake() {
         String askModel = askString("What vehicle model are you looking for");
         List<Vehicle> matchingVehicle = new ArrayList<>();
@@ -104,25 +107,90 @@ public class Main {
     }
 
     private static void searchByPriceRange() {
-        return;
+
+        float priceFilterSystem = priceFilterSystem();
+        switch ((int) priceFilterSystem) {
+            case 1:
+                filterByMinPrice();
+                break;
+            case 2:
+                filterByMaxPrice();
+                break;
+            case 3:
+                filterByMinMax();
+                break;
+        }
+
 
     }
 
-    private static float priceFilter() {
+
+    private static List<Vehicle> filterByMinPrice() {
+        float askPrice = askFloat("Whats the minimum price");
+        List<Vehicle> matchingVehicle = new ArrayList<>();
+
+        for(Vehicle v : inventory){
+            if (askPrice < (v.getPrice())){
+                matchingVehicle.add(v);
+            }
+        }
+        System.out.println("Found: " + matchingVehicle.size() + (matchingVehicle.size() == 1 ? " result" : " results"));
+        displayVehicles( matchingVehicle.toArray(new Vehicle[0]), matchingVehicle.size());
+        return matchingVehicle;
+    }
+
+    private static List<Vehicle> filterByMaxPrice() {
+        float askPrice = askFloat("Whats the maximum price");
+        List<Vehicle> matchingVehicle = new ArrayList<>();
+
+        for(Vehicle v : inventory){
+            if (askPrice > (v.getPrice())){
+                matchingVehicle.add(v);
+            }
+        }
+        System.out.println("Found: " + matchingVehicle.size() + (matchingVehicle.size() == 1 ? " result" : " results"));
+        displayVehicles( matchingVehicle.toArray(new Vehicle[0]), matchingVehicle.size());
+        return matchingVehicle;
+    }
+    private static List<Vehicle> filterByMinMax() {
+        float askMinPrice = askFloat("Whats the minimum price: ");
+        float askMaxPrice = askFloat("Whats the maximum price: ");
+        List<Vehicle> matchingVehicle = new ArrayList<>();
+
+        for(Vehicle v : inventory){
+            if (askMaxPrice > (v.getPrice()) && askMinPrice < v.getPrice()){
+                matchingVehicle.add(v);
+            }
+        }
+        System.out.println("Found: " + matchingVehicle.size() + (matchingVehicle.size() == 1 ? " result" : " results"));
+        displayVehicles( matchingVehicle.toArray(new Vehicle[0]), matchingVehicle.size());
+        return matchingVehicle;
+    }
+
+    private static int priceFilterSystem() {
         boolean validInput = false;
-        float input = 0;
+        int input = 0;
+
+
+
         while(!validInput){
             try {
-                System.out.print("How would you like to filter by?" +
-                        "1. Minimum Price" +
-                        "Maximum Price");
-                input = scanner.nextFloat();
+                System.out.printf("\n How would you like to filter by?" +
+                        "\n 1. Minimum Price" +
+                        "\n 2. Maximum Price" +
+                        "\n 3. Minimum and Maximum Price"
+
+                );
+                input = scanner.nextInt();
+                scanner.nextLine();
                 validInput = true;
             } catch (InputMismatchException e){
                 System.out.printf("That is not a valid input. Please try again");
                 scanner.nextLine();
             }
+
         }
+
         return input;
 
     }
@@ -173,12 +241,11 @@ public class Main {
 
                 input = scanner.nextInt();
                 scanner.nextLine();
-
                 validInput = true;
 
             } catch (InputMismatchException e) {
                 System.out.println("Sorry that is not a valid input. Please try again");
-                Main.scanner.nextLine();
+                scanner.nextLine();
 
 
             }
@@ -195,6 +262,11 @@ public class Main {
     public static float askFloat(String prompt){
         System.out.println(prompt);
         return scanner.nextFloat();
+
+    }
+    public static int askInt(String prompt){
+        System.out.println(prompt);
+        return scanner.nextInt();
 
     }
 }
