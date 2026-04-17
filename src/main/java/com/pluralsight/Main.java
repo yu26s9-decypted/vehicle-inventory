@@ -29,44 +29,42 @@ public class Main {
 
         int userBuyer = vehicleSystem();
 
-        switch (userBuyer) {
-            case 1: // List all vehicles
-                System.out.println("Selected 1");
-                listAllVehicles(inventory, inventory.size() );
-                break;
-            case 2:
-                findVehiclesByPrice();
-            case 3:
-                searchByPriceRange();
-            case 4:
-                searchByColor();
-            case 5:
-                addAVehicle();
-            case 6: // Exit
-                System.out.println("Goodbye!");
-            default:
-                vehicleSystem();
+        while (userBuyer != 6){
+            switch (userBuyer) {
+                case 1: // List all vehicles
+                    System.out.println("Selected 1");
+                    listAllVehicles(inventory, inventory.size() );
+                    break;
+                case 2:
+                    findVehiclesByPrice();
+                case 3:
+                    searchByPriceRange();
+                case 4:
+                    searchByColor();
+                case 5:
+                    addAVehicle();
+                    break;
+                case 6: // Exit
+                    System.out.println("Goodbye!");
+            }
+            userBuyer = vehicleSystem();
         }
+
     }
 
     private static void addAVehicle() {
-    }
+        String addNewVehicleToInventory = askString("What vehicles are you adding? Format: VehicleID|Make Model | Color | Odometer | Price ");
+        String[] vehicle =  addNewVehicleToInventory.split("\\|");
+        long vehicleId = Long.parseLong(vehicle[0]);
+        String vehicleMakeModel = vehicle[1];
+        String vehicleColor = vehicle[2];
+        int vehicleOdometer = Integer.parseInt(vehicle[3]);
+        float vehiclePrice = Float.parseFloat(vehicle[4]);
+        NumberFormat usFormat = NumberFormat.getCurrencyInstance(Locale.US);
 
-
-    private static void displayVehicles(Vehicle[] vehicles, int numberOfVehicles) {
-
-        System.out.printf("Vehicle ID     Make / Model       Color     Mileage        Price \n");
-        for (int i = 0; i < numberOfVehicles; i++) {
-            Vehicle v = vehicles[i];
-            NumberFormat usFormat = NumberFormat.getCurrencyInstance(Locale.US);
-            System.out.printf("%10d %20s %10s %,10d %15s\n",
-                    v.getVehicleId(),
-                    v.getMakeModel(),
-                    v.getColor(),
-                    v.getOdometer(),
-                    usFormat.format(v.getPrice())
-            );
-        }
+        System.out.printf("\n Adding a new vehicle to the inventory... \n Vehicle ID     Make / Model       Color     Mileage        Price \n");
+        System.out.printf("%10d %20s %10s %,10d %15s\n",vehicleId, vehicleMakeModel, vehicleColor, vehicleOdometer, usFormat.format(vehiclePrice));
+        inventory.add(new Vehicle(vehicleId, vehicleMakeModel, vehicleColor, vehicleOdometer, vehiclePrice));
     }
 
 
@@ -87,8 +85,25 @@ public class Main {
     private static void findVehiclesByPrice() {
     }
 
+    private static void displayVehicles(Vehicle[] vehicles, int numberOfVehicles) {
+
+        System.out.printf("Vehicle ID     Make / Model       Color     Mileage        Price \n");
+        for (int i = 0; i < numberOfVehicles; i++) {
+            Vehicle v = vehicles[i];
+            NumberFormat usFormat = NumberFormat.getCurrencyInstance(Locale.US);
+            System.out.printf("%10d %20s %10s %,10d %15s\n",
+                    v.getVehicleId(),
+                    v.getMakeModel(),
+                    v.getColor(),
+                    v.getOdometer(),
+                    usFormat.format(v.getPrice())
+            );
+        }
+    }
+
     public static int vehicleSystem() {
         boolean validInput = false;
+        boolean userQuit = false;
         int input = 0;
         while (!validInput) {
             try {
@@ -102,8 +117,12 @@ public class Main {
                         "Enter your command:"
 
                 );
-                input = Main.scanner.nextInt();
+
+                input = scanner.nextInt();
+                scanner.nextLine();
+
                 validInput = true;
+
             } catch (InputMismatchException e) {
                 System.out.println("Sorry that is not a valid input. Please try again");
                 Main.scanner.nextLine();
@@ -112,6 +131,12 @@ public class Main {
             }
         }
         return input;
+    }
+
+    public static String askString(String prompt){
+        System.out.println(prompt);
+        return scanner.nextLine();
+
     }
 }
 
