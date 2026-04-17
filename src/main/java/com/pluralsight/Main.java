@@ -37,7 +37,8 @@ public class Main {
                     listAllVehicles(inventory, inventory.size() );
                     break;
                 case 2:
-                    findVehiclesByPrice();
+                    searchByMake();
+                    break;
                 case 3:
                     searchByPriceRange();
                 case 4:
@@ -48,11 +49,13 @@ public class Main {
                     break;
                 case 6: // Exit
                     System.out.println("Goodbye!");
+                    break;
             }
             userBuyer = vehicleSystem();
         }
 
     }
+
 
     private static void addAVehicle() {
         String addNewVehicleToInventory = askString("What vehicles are you adding? Format: VehicleID|Make Model | Color | Odometer | Price ");
@@ -84,14 +87,46 @@ public class Main {
         System.out.println("Found: " + matchingVehicle.size() + (matchingVehicle.size() == 1 ? " result" : " results"));
         displayVehicles( matchingVehicle.toArray(new Vehicle[0]), matchingVehicle.size());
         return matchingVehicle;
+    }
 
+    private static List<Vehicle> searchByMake() {
+        String askModel = askString("What vehicle model are you looking for");
+        List<Vehicle> matchingVehicle = new ArrayList<>();
 
+        for(Vehicle v : inventory){
+            if (askModel.equalsIgnoreCase(v.getMakeModel())){
+                matchingVehicle.add(v);
+            }
+        }
+        System.out.println("Found: " + matchingVehicle.size() + (matchingVehicle.size() == 1 ? " result" : " results"));
+        displayVehicles( matchingVehicle.toArray(new Vehicle[0]), matchingVehicle.size());
+        return matchingVehicle;
+    }
+
+    private static void searchByPriceRange() {
+        return;
 
     }
 
-    private static List<Vehicle> searchByPriceRange() {
-        return null;
+    private static float priceFilter() {
+        boolean validInput = false;
+        float input = 0;
+        while(!validInput){
+            try {
+                System.out.print("How would you like to filter by?" +
+                        "1. Minimum Price" +
+                        "Maximum Price");
+                input = scanner.nextFloat();
+                validInput = true;
+            } catch (InputMismatchException e){
+                System.out.printf("That is not a valid input. Please try again");
+                scanner.nextLine();
+            }
+        }
+        return input;
+
     }
+
 
     private static void listAllVehicles(List<Vehicle> vehicles, int numberOfVehicles) {
         System.out.println("List Vehicles");
@@ -100,7 +135,8 @@ public class Main {
 
     }
 
-    private static void findVehiclesByPrice() {
+    private static List <Vehicle> findVehiclesByPrice() {
+        return null;
     }
 
     private static void displayVehicles(Vehicle[] vehicles, int numberOfVehicles) {
@@ -121,7 +157,6 @@ public class Main {
 
     public static int vehicleSystem() {
         boolean validInput = false;
-        boolean userQuit = false;
         int input = 0;
         while (!validInput) {
             try {
@@ -154,6 +189,12 @@ public class Main {
     public static String askString(String prompt){
         System.out.println(prompt);
         return scanner.nextLine();
+
+    }
+
+    public static float askFloat(String prompt){
+        System.out.println(prompt);
+        return scanner.nextFloat();
 
     }
 }
